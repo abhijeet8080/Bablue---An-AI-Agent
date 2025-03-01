@@ -30,6 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/icons/logo-og.png" type="image/png" />
+      </head>
     <ClerkProvider
     appearance={{
       layout:{
