@@ -10,3 +10,9 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid request" }, { status: 400 });
   }
 }
+
+
+// Add a GET handler to handle browser requests
+export async function GET() {
+  return Response.json({ message: "Welcome to the AI Chat API!" }, { status: 200 });
+}

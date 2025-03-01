@@ -45,7 +45,7 @@ export function ChatUI() {
 
       try {
         setPlaceHolderOn(false);
-        const res = await axios.post("/api/tasks", { message: task, user });
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}}/api/tasks`, { message: task, user });
 
         setMessages((prev) => [
           ...prev.slice(0, -1),
