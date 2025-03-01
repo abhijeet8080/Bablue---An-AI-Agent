@@ -1,18 +1,56 @@
 import { chatWithAI } from "@/controllers/chatController";
 
+const allowedOrigins = process.env.NEXT_PUBLIC_ALLOWED_ORIGINS?.split(",") || ["*"];
+
+function getCorsHeaders(origin: string) {
+  const isAllowed = allowedOrigins.includes("*") || allowedOrigins.includes(origin);
+
+  return {
+    "Access-Control-Allow-Origin": isAllowed ? origin : "null",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Credentials": "true",
+  };
+}
+
 export async function POST(req: Request) {
   try {
+    const origin = req.headers.get("origin") || "";
+    const corsHeaders = getCorsHeaders(origin);
+
+    if (req.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
     const { message, user } = await req.json();
-    const response = await chatWithAI(message,user.id,user.firstName,user.lastName);
-    return Response.json({ reply: `${response.reply}` }, { status: 200 });
+    const response = await chatWithAI(message, user.id, user.firstName, user.lastName);
+
+    return new Response(JSON.stringify({ reply: response.reply }), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (error) {
-    console.log("Error: " ,error)
-    return Response.json({ error: "Invalid request" }, { status: 400 });
+    console.log("Error:", error);
+    return new Response(JSON.stringify({ error: "Invalid request" }), {
+      status: 400,
+      headers: { "Access-Control-Allow-Origin": "*" },
+    });
   }
 }
 
+export async function GET(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const corsHeaders = getCorsHeaders(origin);
 
-// Add a GET handler to handle browser requests
-export async function GET() {
-  return Response.json({ message: "Welcome to the AI Chat API!" }, { status: 200 });
+  return new Response(JSON.stringify({ message: "Welcome to the AI Chat API!" }), {
+    status: 200,
+    headers: corsHeaders,
+  });
+}
+
+export async function OPTIONS(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const corsHeaders = getCorsHeaders(origin);
+
+  return new Response(null, { status: 204, headers: corsHeaders });
 }

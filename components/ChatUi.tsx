@@ -8,6 +8,7 @@ import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TypingAnimation } from "./ui/typing-animation";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export function ChatUI() {
   const placeholders = [
@@ -16,11 +17,20 @@ export function ChatUI() {
     "Is there any task related to the project?",
     "What are the tasks for this week?",
   ];
+  
   const { user, isLoaded } = useUser();
-  const [placeHolderOn,setPlaceHolderOn] = useState<boolean>(true);
+  const router = useRouter();
+  const [placeHolderOn, setPlaceHolderOn] = useState<boolean>(true);
   const [tasks, setTasks] = useState<string[]>([]);
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Redirect if user is not authenticated
+  useEffect(() => {
+    if (isLoaded && !user) {
+      router.push("/sign-in");
+    }
+  }, [isLoaded, user, router]);
 
   const fadeUpVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -45,26 +55,22 @@ export function ChatUI() {
 
       try {
         setPlaceHolderOn(false);
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}}/api/tasks`, { message: task, user });
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, { message: task, user });
+        // const res = await axios.post(`/api/tasks`, { message: task, user });
 
         setMessages((prev) => [
           ...prev.slice(0, -1),
           { sender: "Bablue", text: res.data.reply },
         ]);
-        setPlaceHolderOn(true);
       } catch (error) {
         console.log("Error: ", error);
         setMessages((prev) => [
           ...prev.slice(0, -1),
           { sender: "Bablue", text: "Oops! Something went wrong." },
-          
         ]);
-        setPlaceHolderOn(true);
-
       } finally {
         setIsLoading(false);
         setPlaceHolderOn(true);
-
       }
     }
   };
