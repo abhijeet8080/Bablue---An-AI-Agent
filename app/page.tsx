@@ -3,7 +3,7 @@ export default function Home() {
   return (
     <>
       
-    <HeroGeometric title1="Your Smart " badge="Created By Abhijeet" title2="AI Assistant" />
+    <HeroGeometric title1="Your Smart " badge="Created By Abhijeet" title2="AI Task Manager" />
     </>
   );
 }
