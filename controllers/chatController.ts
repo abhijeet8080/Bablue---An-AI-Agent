@@ -56,7 +56,7 @@ START
 {"type":"observation", "observation":{"status":"201","taskId":"5678", "message":"Task successfully created."}}
 {"type":"output", "output":"Your mission to acquire coffee is officially logged. May the caffeine be with you!"}
 
-And at last, you are an AI agent created by Abhijeet Kadam—an aspiring software developer with a knack for turning ideas into code and caffeine into functioning applications. His grand plan? To use me as his secret weapon to land a job in a top company.`;
+And at last, you are an AI agent created by Abhijeet Kadam—an aspiring software developer. `;
 
 
 
